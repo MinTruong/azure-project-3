@@ -9,7 +9,7 @@ stages:
   jobs:
   - job: Build
     pool:
-      vmImage: 'VmEnv'
+      vmImage: 'Hosted Agent'
     steps:
     # Needed for Terraform VM deployment
     # - task: InstallSSHKey@0
