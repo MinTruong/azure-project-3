@@ -16,10 +16,10 @@ stages:
         deploy:
           steps:
             - checkout: self           
-            # - task: TerraformInstaller@0
-            #   displayName: 'install terraform'
-            #   inputs:
-            #     terraformVersion: 'latest'
+            - task: TerraformInstaller@0
+              displayName: 'install terraform'
+              inputs:
+                terraformVersion: 'latest'
             - task: Bash@3
               inputs:
                 targetType: 'inline'
