@@ -1,10 +1,8 @@
-name: myAgentPool
+
 trigger:
 - master
 
-pool: 
-   vmImage: ubuntu-latest
-   name: MyAgent
+pool: myAgentPool
 
 stages:
 - stage: deploy_terraform
