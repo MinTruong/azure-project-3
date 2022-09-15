@@ -1,6 +1,8 @@
 
 trigger:
 - master
+variables:
+  python.version: '3.7.6'
 
 pool: myAgentPool
 
@@ -10,16 +12,16 @@ stages:
   jobs: 
   - deployment: deploy_terraform
     continueOnError: false
-    environment: 'dev'
+    environment: 'EvnP3'
     strategy:
       runOnce:
         deploy:
           steps:
-            - checkout: self           
-            - task: TerraformInstaller@0
-              displayName: 'install terraform'
-              inputs:
-                terraformVersion: 'latest'
+            - checkout: self
+            # - task: TerraformInstaller@0
+            #   displayName: 'install terraform'
+            #   inputs:
+            #     terraformVersion: 'latest'
             - task: Bash@3
               inputs:
                 targetType: 'inline'
