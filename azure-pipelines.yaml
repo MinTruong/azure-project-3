@@ -6,12 +6,15 @@ pool:
    vmImage: ubuntu-latest
    name: MyAget
 
-jobs:
-   displayName: Deploy to VM
-   environment: 
-      name: EvnP3
+stages:
+- stage: Build
+  displayName: Deploy to VM
+  jobs:
+    displayName: Deploy to VM
+    environment: 
+      name: 'EvnP3'
       resourceType: VirtualMachine
-   strategy:
+    strategy:
       runOnce:
          deploy:   
             steps:
