@@ -5,27 +5,28 @@ variables:
 
 pool: myAgentPool
 
-stages:
-- stage: Build
-  displayName: Build stage
-  jobs:
-  - job: BuildJob
-    pool: 
-      vmImage: 'ubuntu-18.04'
-      name: myAgentPool
-    steps:    
-    - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
-      displayName: install terraform
-      inputs:
-        terraformVersion: latest    
-    - task: Bash@3
-      inputs:
-        targetType: 'inline'
-        script: |
-          # Write your commands here
-          # python3.7 -m pip install --upgrade pip
-          # python3.7 -m pip install setup
-          echo "helo"
+# stages:
+# - stage: Build
+#   displayName: Build stage
+#   jobs:
+#   - job: BuildJob
+#     pool: 
+#       # vmImage: 'ubuntu-18.04'
+#       name: myAgentPool
+#     steps:    
+#     - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
+#       displayName: install terraform
+#       inputs:
+#         terraformVersion: latest    
+#     - task: Bash@3
+#       inputs:
+#         targetType: 'inline'
+#         script: |
+#           # Write your commands here
+#           # python3.7 -m pip install --upgrade pip
+#           # python3.7 -m pip install setup
+#           echo "helo"
+#           ls -la
 
     #     python3.7 -m pip install -r requirements.txt
     #   workingDirectory: $(projectRoot)
@@ -44,26 +45,31 @@ stages:
     #     archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
     #     replaceExistingArchive: true
 
-# - stage: deploy_terraform
-#   displayName: provision infrastructure  
-#   jobs: 
-#   - deployment: deploy_terraform
-#     continueOnError: false
-#     environment: 'EvnP3'
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#             - checkout: self
-
+- stage: Prepare
+  displayName: Prepare environment 
+  jobs: 
+  - deployment: deploy_terraform
+    continueOnError: false
+    environment: 'EvnP3'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - checkout: self
+            - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
+              displayName: install terraform
+              inputs:
+                terraformVersion: latest   
 #             # - task: TerraformInstaller@0
 #             #   displayName: 'install terraform'
 #             #   inputs:
 #             #     terraformVersion: 'latest'
-#             - task: Bash@3
-#               inputs:
-#                 targetType: 'inline'
-#                 script: |
-#                   # Write your commands here
-#                   echo 'Hello world'
+            - task: Bash@3
+              inputs:
+                targetType: 'inline'
+                script: |
+                  # Write your commands here
+                  echo 'Hello world'
+                  pwd
+                  ls -la
   
