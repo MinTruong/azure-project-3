@@ -1,9 +1,10 @@
-# name: Azure Pipelines
+name: myAgentPool
 trigger:
 - master
 
 pool: 
    vmImage: ubuntu-latest
+   name: MyAget
 
 jobs:
    displayName: Deploy to VM
