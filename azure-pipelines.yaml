@@ -69,7 +69,7 @@ stages:
                 targetType: 'inline'
                 script: |
                   # Write your commands here
-                  echo 'Hello world'
-                  pwd
-                  ls -la
+                  cd terraform
+                  terraform init
+                  
   
