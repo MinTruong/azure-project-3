@@ -8,9 +8,9 @@ pool:
 
 stages:
 - stage: Build
-  displayName: Deploy to VM
+  displayName: Deploy
   jobs:
-    displayName: Deploy to VM
+  - deployment: Deploy_to_VM
     environment: 
       name: 'EvnP3'
       resourceType: VirtualMachine
