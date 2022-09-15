@@ -7,25 +7,53 @@ variables:
 pool: myAgentPool
 
 stages:
-- stage: deploy_terraform
-  displayName: provision infrastructure  
-  jobs: 
-  - deployment: deploy_terraform
-    continueOnError: false
-    environment: 'EvnP3'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-            - checkout: self
-            # - task: TerraformInstaller@0
-            #   displayName: 'install terraform'
-            #   inputs:
-            #     terraformVersion: 'latest'
-            - task: Bash@3
-              inputs:
-                targetType: 'inline'
-                script: |
-                  # Write your commands here
-                  echo 'Hello world'
+- stage: Build
+  displayName: Build stage
+  jobs:
+  - job: BuildJob
+    pool: myAgentPool
+    steps:    
+    - script: |
+        python3.7 -m pip install --upgrade pip
+        python3.7 -m pip install setup
+        python --version
+    #     python3.7 -m pip install -r requirements.txt
+    #   workingDirectory: $(projectRoot)
+    # - script: |
+    #     export PATH=$HOME/.local/bin:$PATH
+    #     make install
+    #     make lint
+    #   workingDirectory: $(projectRoot)
+    #   displayName: 'Run lint tests'
+    # - task: ArchiveFiles@2
+    #   displayName: 'Archive files'
+    #   inputs:
+    #     rootFolderOrFile: '$(projectRoot)'
+    #     includeRootFolder: false
+    #     archiveType: zip
+    #     archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+    #     replaceExistingArchive: true
+
+# - stage: deploy_terraform
+#   displayName: provision infrastructure  
+#   jobs: 
+#   - deployment: deploy_terraform
+#     continueOnError: false
+#     environment: 'EvnP3'
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:
+#             - checkout: self
+
+#             # - task: TerraformInstaller@0
+#             #   displayName: 'install terraform'
+#             #   inputs:
+#             #     terraformVersion: 'latest'
+#             - task: Bash@3
+#               inputs:
+#                 targetType: 'inline'
+#                 script: |
+#                   # Write your commands here
+#                   echo 'Hello world'
   
