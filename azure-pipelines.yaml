@@ -7,15 +7,24 @@ pool:
    name: MyAgent
 
 stages:
-- stage: Build
-  displayName: Deploy
-  jobs:
-  - deployment: Deploy_to_VM
-    environment: 
-      name: 'EvnP3'
-      resourceType: VirtualMachine
+- stage: deploy_terraform
+  displayName: provision infrastructure  
+  jobs: 
+  - deployment: deploy_terraform
+    continueOnError: false
+    environment: 'dev'
     strategy:
       runOnce:
-         deploy:   
-            steps:
-               - script: echo "Hello world"
+        deploy:
+          steps:
+            - checkout: self           
+            - task: TerraformInstaller@0
+              displayName: 'install terraform'
+              inputs:
+                terraformVersion: 'latest'
+            - task: Bash@3
+              displayName: init
+              inputs:
+                targetType: 'inline'
+                script: |
+                  echo "hi"
