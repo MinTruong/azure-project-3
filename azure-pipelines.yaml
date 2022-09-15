@@ -4,7 +4,7 @@ trigger:
 
 pool: 
    vmImage: ubuntu-latest
-   name: MyAget
+   name: MyAgent
 
 stages:
 - stage: Build
