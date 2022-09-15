@@ -18,13 +18,14 @@ stages:
         deploy:
           steps:
             - checkout: self           
-            - task: TerraformInstaller@0
-              displayName: 'install terraform'
-              inputs:
-                terraformVersion: 'latest'
+            # - task: TerraformInstaller@0
+            #   displayName: 'install terraform'
+            #   inputs:
+            #     terraformVersion: 'latest'
             - task: Bash@3
-              displayName: init
               inputs:
                 targetType: 'inline'
                 script: |
-                  echo "hi"
+                  # Write your commands here
+                  echo 'Hello world'
+  
