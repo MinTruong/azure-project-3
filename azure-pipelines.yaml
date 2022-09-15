@@ -44,7 +44,7 @@ pool: myAgentPool
     #     archiveType: zip
     #     archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
     #     replaceExistingArchive: true
-
+stages:
 - stage: Prepare
   displayName: Prepare environment 
   jobs: 
