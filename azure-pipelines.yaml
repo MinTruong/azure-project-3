@@ -56,10 +56,15 @@ stages:
         deploy:
           steps:
             - checkout: self
-            - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
-              displayName: install terraform
+            # - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
+            #   displayName: install terraform
+            #   inputs:
+            #     terraformVersion: latest   
+            - task: Terraform@2
               inputs:
-                terraformVersion: latest   
+                Arguments: 
+                InstallTerraform: true
+                UseAzureSub: false
 #             # - task: TerraformInstaller@0
 #             #   displayName: 'install terraform'
 #             #   inputs:
