@@ -82,5 +82,6 @@ stages:
                 provider: 'azurerm'
                 command: 'plan'
                 workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+                environmentServiceName: 'UdacityDS - 68'
 
   
