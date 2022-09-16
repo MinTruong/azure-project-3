@@ -86,7 +86,17 @@ stages:
                   ls -la
                   cd terraform
                   terraform plan
-                
+            
+            - task: Bash@3
+              displayName: plan terraform
+              inputs:
+                targetType: 'inline'
+                script: |
+                  # Write your commands here
+                  ls -la
+                  cd terraform
+                  terraform apply -auto-approve
+
 
             ######### Step 2: Initialise workspace using terraform init
 
