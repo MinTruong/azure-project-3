@@ -77,4 +77,8 @@ stages:
                   cd terraform
                   terraform init
                   
+            - task: TerraformTaskV3@3
+              inputs:
+                provider: 'azurerm'
+                command: 'plan'
   
