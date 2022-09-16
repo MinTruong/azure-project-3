@@ -83,17 +83,15 @@ stages:
                 targetType: 'inline'
                 script: |
                   # Write your commands here
-                  ls -la
                   cd terraform
                   terraform plan
             
             - task: Bash@3
-              displayName: plan terraform
+              displayName: apply terraform
               inputs:
                 targetType: 'inline'
                 script: |
                   # Write your commands here
-                  ls -la
                   cd terraform
                   terraform apply -auto-approve
 
