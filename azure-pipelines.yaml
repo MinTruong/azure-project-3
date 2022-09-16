@@ -76,7 +76,21 @@ stages:
             #       # Write your commands here
             #       cd terraform
             #       terraform init
-                  
+
+            ######### Step 2: Initialise workspace using terraform init
+            - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+              displayName: 'terraform init'
+              inputs:
+                command: init
+                workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+                backendType: azurerm
+                backendServiceArm: 'UdacityDS - 68 (c4863261-b051-4fa5-8f4c-a3a5132d5ed1)''
+                backendAzureRmResourceGroupLocation: eastus
+                backendAzureRmResourceGroupName: Azuredevops
+                backendAzureRmStorageAccountName: storage207575
+                backendAzureRmContainerName: mycontainer207575
+                backendAzureRmKey: tf/terraform.tfstate       
+
             - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
               displayName: 'terraform plan'
               inputs:
@@ -84,5 +98,9 @@ stages:
                 command: 'plan'
                 workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
                 environmentServiceName: 'UdacityDS - 68 (c4863261-b051-4fa5-8f4c-a3a5132d5ed1)'
-
+# - task: TerraformTaskV3@3
+#   inputs:
+#     provider: 'azurerm'
+#     command: 'plan'
+#     workingDirectory: '$(System.DefaultWorkingDirectory)/teraform'
   
