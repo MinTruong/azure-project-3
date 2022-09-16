@@ -84,7 +84,7 @@ stages:
                 command: init
                 workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
                 backendType: azurerm
-                backendServiceArm: 'UdacityDS - 68 (c4863261-b051-4fa5-8f4c-a3a5132d5ed1)''
+                backendServiceArm: 'UdacityDS - 68 (c4863261-b051-4fa5-8f4c-a3a5132d5ed1)'
                 backendAzureRmResourceGroupLocation: eastus
                 backendAzureRmResourceGroupName: Azuredevops
                 backendAzureRmStorageAccountName: storage207575
