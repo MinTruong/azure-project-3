@@ -7,10 +7,10 @@ provider "azurerm" {
 }
 terraform {
   backend "azurerm" {
-    storage_account_name = "storage206771"
-    container_name       = "mycontainer"
+    storage_account_name = "storage207575"
+    container_name       = "mycontainer207575"
     key                  = "key1"
-    access_key           = "SypAMAIRddVnqlRFUwl27KWOdPfo99m8Lgi6aM/k76sMW4c0PX+Os/aR+MQxuLJcS6DkSPBcLxX9+AStHUuECA=="
+    access_key           = "ce1zkvr7cEqLB2E9vHk8oBp9q9VbVKWR3FbdzZtTbbRgxNrGk8Aibr2CNEhXOyowExYBAkqLO7Cw+AStIfSTow=="
   }
 }
 
