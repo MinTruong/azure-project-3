@@ -159,6 +159,7 @@ stages:
                 sudo apt-get install unzip -y
                 sudo apt-get install -y chromium-browser
                 sudo apt-get install -y chromium-chromedriver
+                sudo apt-get install -y webdriver
                 pip3 install selenium
                 export PATH=$PATH:/usr/lib/chromium-browser/
                 cd $(Pipeline.Workspace)/selenium
