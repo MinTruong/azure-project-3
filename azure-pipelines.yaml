@@ -159,8 +159,8 @@ stages:
                 sudo apt-get install unzip -y
                 sudo apt-get install -y chromium-browser
                 sudo apt-get install -y chromium-chromedriver
-                sudo apt-get install -y webdriver
                 pip3 install selenium
+                pip3 install webdriver
                 export PATH=$PATH:/usr/lib/chromium-browser/
                 cd $(Pipeline.Workspace)/selenium
                 unzip -o $(Pipeline.Workspace)/selenium/$(Build.BuildId)-selenium-tests -d .
@@ -170,6 +170,6 @@ stages:
               targetType: 'inline'
               script: |
                 # python3.7 /home/Agent/myagent/_work/1/selenium/login.py > /home/Agent/myagent/_work/1/selenium/seleniumtestrun.log
-                python3.7 /home/Agent/myagent/_work/1/selenium/login.py | tee -a /home/Agent/myagent/_work/1/selenium/seleniumtestrun.log
+                python3 /home/Agent/myagent/_work/1/selenium/login.py | tee -a /home/Agent/myagent/_work/1/selenium/seleniumtestrun.log
                 cat /home/Agent/myagent/_work/1/selenium/seleniumtestrun.log
                 sudo cp /home/Agent/myagent/_work/1/selenium/seleniumtestrun.log /var/log
