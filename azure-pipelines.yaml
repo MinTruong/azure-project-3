@@ -45,6 +45,10 @@ pool: myAgentPool
     #     archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
     #     replaceExistingArchive: true
 stages:
+
+####################################################################
+#                       Prepare environment                        #
+####################################################################
 - stage: Prepare
   displayName: Prepare environment 
   jobs: 
@@ -56,6 +60,8 @@ stages:
         deploy:
           steps:
             - checkout: self
+
+            ######### Step 1: Install Terraform ##########
             - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
               displayName: install terraform
               inputs:
@@ -77,6 +83,9 @@ stages:
                   # Write your commands here
                   cd terraform
                   terraform init
+
+          ######### Step 2: Initialise workspace using terraform init ##########
+
             - task: Bash@3
               displayName: plan terraform
               inputs:
@@ -85,7 +94,8 @@ stages:
                   # Write your commands here
                   cd terraform
                   terraform plan
-            
+
+            ######### Step 3: Deploy Webapp terraform apply ##########
             - task: Bash@3
               displayName: apply terraform
               inputs:
@@ -96,5 +106,69 @@ stages:
                   terraform apply -auto-approve
 
 
-            ######### Step 2: Initialise workspace using terraform init
 
+            
+####################################################################
+#                       Build Slenium zip                          #
+####################################################################
+- stage: BuildSlenium
+  jobs:
+  - job: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+      name: 'myAgentPool'
+    steps:
+    - task: ArchiveFiles@2
+      displayName: 'Archive Selenium tests'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium-tests.zip'
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium-tests.zip
+      displayName: 'Upload Selenium Tests'
+      artifact: selenium
+
+####################################################################
+#                       Run Test Slenium                           #
+####################################################################
+- stage: Deployment     
+  jobs:
+  - deployment: UITests
+    displayName: 'UI Tests'
+    pool:
+      vmImage: 'ubuntu-18.04'
+      name: myAgentPool
+    environment:  'TEST'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            displayName: Download selenium
+            artifact: selenium
+          - task: Bash@3
+            displayName: 'Install Selenium'
+            inputs:
+              targetType: 'inline'
+              script: |
+                #! /bin/bash
+                
+                sudo apt-get upgrade -y
+                sudo apt-get install python3-pip -y
+                sudo apt-get install unzip -y
+                sudo apt-get install -y chromium-browser
+                sudo apt-get install -y chromium-chromedriver
+                pip3 install selenium
+                export PATH=$PATH:/usr/lib/chromium-browser/
+                cd $(Pipeline.Workspace)/selenium
+                unzip -o $(Pipeline.Workspace)/selenium/$(Build.BuildId)-selenium-tests -d .
+          - task: Bash@3
+            displayName: 'Run Selenium Tests'
+            inputs:
+              targetType: 'inline'
+              script: |
+                # python3 /home/devopsagent/myagent/_work/1/selenium/login.py > /home/devopsagent/myagent/_work/1/selenium/seleniumtestrun.log
+                python3 /home/devopsagent/myagent/_work/1/selenium/login.py | tee -a /home/devopsagent/myagent/_work/1/selenium/seleniumtestrun.log
+                cat /home/devopsagent/myagent/_work/1/selenium/seleniumtestrun.log
+                sudo cp /home/devopsagent/myagent/_work/1/selenium/seleniumtestrun.log /var/log
