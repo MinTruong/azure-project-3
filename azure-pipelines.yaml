@@ -111,7 +111,7 @@ stages:
 ####################################################################
 #                       Build Slenium zip                          #
 ####################################################################
-- stage: BuildSlenium
+- stage: Build
   jobs:
   - job: Build
     pool:
@@ -128,6 +128,17 @@ stages:
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium-tests.zip
       displayName: 'Upload Selenium Tests'
       artifact: selenium
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive Postman tests'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-postman-tests.zip'
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-postman-tests.zip
+      displayName: 'Upload Postman Tests'
+      artifact: postman
 
 ####################################################################
 #                       Run Test Slenium                           #
@@ -172,3 +183,5 @@ stages:
                 python3 /home/Agent/myagent/_work/1/selenium/login.py | tee -a /home/Agent/myagent/_work/1/selenium/seleniumtestrun.log
                 cat /home/Agent/myagent/_work/1/selenium/seleniumtestrun.log
                 sudo cp /home/Agent/myagent/_work/1/selenium/seleniumtestrun.log /var/log
+          
+          
