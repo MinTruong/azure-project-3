@@ -199,6 +199,8 @@ stages:
                 sudo apt install nodejs npm -y
                 nodejs --version
                 npm install -g newman
+                cd /home/myagent/myagent/_work/1/
+                ls -la
           - bash: |
               newman run /home/myagent/myagent/_work/1/postman/P3_Validation_Tests.postman_collection.json \
                         -e /home/myagent/myagent/_work/1/postman/P3_Validation_Tests_Environment.postman_environment.json \
