@@ -191,6 +191,14 @@ stages:
             displayName: Install Node v16.X
             inputs:
               versionSpec: '16.x'
+          - task: Bash@3
+            displayName: 'Install newman'
+            inputs:
+              targetType: 'inline'
+              script: |
+                sudo apt install nodejs npm -y
+                nodejs --version
+                npm install -g newman
           - bash: |
               newman run /home/myagent/myagent/_work/1/postman/P3_Validation_Tests.postman_collection.json \
                         -e /home/myagent/myagent/_work/1/postman/P3_Validation_Tests_Environment.postman_environment.json \
