@@ -200,7 +200,7 @@ stages:
                 nodejs --version
                 npm install -g newman
                 cd $(Pipeline.Workspace)/postman
-                unzip -o $(Pipeline.Workspace)/selenium/$(Build.BuildId)-postman-tests -d .
+                unzip -o $(Pipeline.Workspace)/postman/$(Build.BuildId)-postman-tests -d .
           - bash: |
               newman run /home/myagent/myagent/_work/1/postman/P3_Validation_Tests.postman_collection.json \
                         -e /home/myagent/myagent/_work/1/postman/P3_Validation_Tests_Environment.postman_environment.json \
