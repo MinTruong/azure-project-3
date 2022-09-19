@@ -179,16 +179,8 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
-<<<<<<< HEAD
-                # python3.7 /home/Agent/myagent/_work/1/selenium/login.py > /home/Agent/myagent/_work/1/selenium/seleniumtestrun.log
-                python3 /home/Agent/myagent/_work/1/selenium/login.py | tee -a /home/Agent/myagent/_work/1/selenium/seleniumtestrun.log
-                cat /home/Agent/myagent/_work/1/selenium/seleniumtestrun.log
-                sudo cp /home/Agent/myagent/_work/1/selenium/seleniumtestrun.log /var/log
-          
-          
-=======
                 # python3.7 /home/myagent/myagent/_work/1/selenium/login.py > /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
                 python3 /home/myagent/myagent/_work/1/selenium/login.py | tee -a /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
                 cat /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
                 sudo cp /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log /var/log
->>>>>>> 7b5d61ff5f7e54e451ae18af93c14966224a90b6
+
