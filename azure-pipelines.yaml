@@ -85,15 +85,20 @@ stages:
                   terraform init
 
           ######### Step 2: Initialise workspace using terraform init ##########
-
-            - task: Bash@3
-              displayName: plan terraform
+            
+            - task: TerraformCLI@0
               inputs:
-                targetType: 'inline'
-                script: |
-                  # Write your commands here
-                  cd terraform
-                  terraform plan
+                command: 'plan'
+                workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+                allowTelemetryCollection: true
+            # - task: Bash@3
+            #   displayName: plan terraform
+            #   inputs:
+            #     targetType: 'inline'
+            #     script: |
+            #       # Write your commands here
+            #       cd terraform
+            #       terraform plan
 
             ######### Step 3: Deploy Webapp terraform apply ##########
             - task: Bash@3
