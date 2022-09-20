@@ -89,7 +89,7 @@ stages:
     - task: ArchiveFiles@2
       displayName: 'Archive FakeRestAPI'
       inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/fakerestapi'
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/fakerestapi'
         includeRootFolder: false
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
@@ -121,16 +121,16 @@ stages:
               appType: webApp
               package: $(Pipeline.Workspace)/fakerestapi/$(Build.BuildId)-fakerestapi.zip
             
-# ####################################################################
-# #                       Build Slenium zip                          #
-# ####################################################################
-# - stage: Build
-#   jobs:
-#   - job: Build
-#     pool:
-#       vmImage: 'ubuntu-latest'
-#       name: 'myAgentPool'
-#     steps:
+####################################################################
+#                       Build Test   zip                           #
+####################################################################
+- stage: Build
+  jobs:
+  - job: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+      name: 'myAgentPool'
+    steps:
 #     - task: ArchiveFiles@2
 #       displayName: 'Archive Selenium tests'
 #       inputs:
@@ -153,21 +153,32 @@ stages:
 #       displayName: 'Upload Postman Tests'
 #       artifact: postman
 
-# ####################################################################
-# #                       Run Test Slenium                           #
-# ####################################################################
-# - stage: Deployment     
-#   jobs:
-#   - deployment: UITests
-#     displayName: 'UI Tests'
-#     pool:
-#       vmImage: 'ubuntu-18.04'
-#       name: myAgentPool
-#     environment:  'TEST'
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
+      - task: ArchiveFiles@2
+        displayName: 'Archive Jmeter tests'
+        inputs:
+          rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
+          includeRootFolder: false
+          archiveType: 'zip'
+          archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-jmeter-tests.zip'
+      - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-jmeter-tests.zip
+        displayName: 'Upload JMeter Tests'
+        artifact: jmeter
+
+####################################################################
+#                            Run Test                              #
+####################################################################
+- stage: Deployment     
+  jobs:
+  - deployment: UITests
+    displayName: 'UI Tests'
+    pool:
+      vmImage: 'ubuntu-18.04'
+      name: myAgentPool
+    environment:  'TEST'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
 #           - download: current
 #             displayName: Download selenium
 #             artifact: selenium 
@@ -244,3 +255,54 @@ stages:
 #               mergeTestResults: true
 #               testRunTitle: 'Regression and Validation Test Reports'
 
+          - download: current
+            displayName: Download postman
+            artifact: postman
+          - task: Bash@3
+            displayName: Install JMeter
+            inputs:
+              targetType: 'inline'
+              script: |
+                sudo apt-get install openjdk-11-jre-headless -y
+                wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.1.tgz -O jmeter.tgz
+                tar -xzvf jmeter.tgz
+          
+          - task: Bash@3
+            displayName: Run JMeter tests
+            inputs:
+              targetType: 'inline'
+              script: |
+                apache-jmeter-5.4.1/bin/jmeter -n -t /home/myagent/myagent/_work/1/jmeter/endurance.jmx \
+                  -l /home/myagent/myagent/_work/1/jmeter/endurance-results.csv \
+                  -e -f -o /home/myagent/myagent/_work/1/jmeter/endurance-test-report.html \
+                  -j /home/myagent/myagent/_work/1/jmeter/endurance-test.log
+                
+                cd /home/myagent/myagent/_work/1/jmeter/
+                ls -la
+# - stage: PerformanceTest
+#   displayName: Performance Tests
+#   jobs:
+#   - job: JMeterTests
+#     displayName: JMeter Tests
+#     pool:
+#       name: myAgentPool
+#       vmImage: 'ubuntu-18.04'
+#     steps:
+#       - task: Bash@3
+#         displayName: Install JMeter
+#         inputs:
+#           targetType: 'inline'
+#           script: |
+#             sudo apt-get install openjdk-11-jre-headless -y
+#             wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.1.tgz -O jmeter.tgz
+#             tar -xzvf jmeter.tgz
+      
+#       - task: Bash@3
+#         displayName: Run JMeter tests
+#         inputs:
+#           targetType: 'inline'
+#           script: |
+#             apache-jmeter-5.4.1/bin/jmeter -n -t automatedtesting/jmeter/endurance.jmx \
+#               -l automatedtesting/jmeter/endurance-results.csv \
+#               -e -f -o automatedtesting/jmeter/endurance-test-report.html \
+#               -j automatedtesting/jmeter/endurance-test.log
