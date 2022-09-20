@@ -5,47 +5,6 @@ variables:
   webAppName: 'webApp-AppService'
   azureServiceConnectionId: 'myConnection'
 pool: myAgentPool
-
-# stages:
-# - stage: Build
-#   displayName: Build stage
-#   jobs:
-#   - job: BuildJob
-#     pool: 
-#       # vmImage: 'ubuntu-18.04'
-#       name: myAgentPool
-#     steps:    
-#     - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
-#       displayName: install terraform
-#       inputs:
-#         terraformVersion: latest    
-#     - task: Bash@3
-#       inputs:
-#         targetType: 'inline'
-#         script: |
-#           # Write your commands here
-#           # python3.7 -m pip install --upgrade pip
-#           # python3.7 -m pip install setup
-#           echo "helo"
-#           ls -la
-
-    #     python3.7 -m pip install -r requirements.txt
-    #   workingDirectory: $(projectRoot)
-    # - script: |
-    #     export PATH=$HOME/.local/bin:$PATH
-    #     make install
-    #     make lint
-    #   workingDirectory: $(projectRoot)
-    #   displayName: 'Run lint tests'
-    # - task: ArchiveFiles@2
-    #   displayName: 'Archive files'
-    #   inputs:
-    #     rootFolderOrFile: '$(projectRoot)'
-    #     includeRootFolder: false
-    #     archiveType: zip
-    #     archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-    #     replaceExistingArchive: true
-
 stages:
 ####################################################################
 #                       Prepare environment                        #
@@ -63,10 +22,14 @@ stages:
             - checkout: self
 
             ######### Step 1: Install Terraform ##########
-            - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
+            - task: TerraformInstaller@0
               displayName: install terraform
               inputs:
-                terraformVersion: latest   
+                terraformVersion: 'latest'
+            # - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
+            #   displayName: install terraform
+            #   inputs:
+            #     terraformVersion: latest   
             # - task: Terraform@2
             #   inputs:
             #     Arguments: 
