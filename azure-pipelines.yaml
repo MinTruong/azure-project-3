@@ -22,6 +22,13 @@ stages:
             - checkout: self
 
             ######### Step 1: Install Terraform ##########
+            - task: Bash@3
+              displayName: install zip
+              inputs:
+                targetType: 'inline'
+                script: |
+                  # Write your commands here
+                  sudo apt-get -y install zip
             # - task: TerraformInstaller@0
             #   displayName: install terraform
             #   inputs:
@@ -30,11 +37,6 @@ stages:
               displayName: install terraform
               inputs:
                 terraformVersion: latest   
-            # - task: Terraform@2
-            #   inputs:
-            #     Arguments: 
-            #     InstallTerraform: true
-            #     UseAzureSub: false
 
             - task: Bash@3
               displayName: init terraform
