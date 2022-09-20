@@ -3,8 +3,6 @@ variable resource_group {}
 variable location {}
 
 # Virtual Machine
-#variable "admin_password" {}
-#variable "computer_name" {}
 variable "application_type" {}
 variable "resource_type" {}
 variable "admin_username" {}

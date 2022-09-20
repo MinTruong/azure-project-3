@@ -1,6 +1,6 @@
 AzureDevOps@123
 
-a5kbfysehas7icn6m673tzhosc52odj5w6kekchlik24qvvzclza
+5eo77fjjdhqzta7qx5gibn6slmmbjnpuyhub7rpbjwp65dq3kybq
 
 # name: Azure Pipelines
 trigger:
