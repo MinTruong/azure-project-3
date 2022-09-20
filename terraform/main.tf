@@ -7,10 +7,10 @@ provider "azurerm" {
 }
 terraform {
   backend "azurerm" {
-    storage_account_name = "storage207860"
+    storage_account_name = "storage208003"
     container_name       = "mycontainer"
     key                  = "key1"
-    access_key           = "wnzD3aAlgT5cx9Ox/mBu0p+AVF5pbQXMX1RgeRsdy98RtgniGNHL3FCFMHvcHTvlBbLXQT37UCX/+ASt498j2A=="
+    access_key           = "INZKKI6p7Mum9jBil8ri8wGC0SR1m46zK1DutWyEkQLNTJSqch2wB/7PSYvR+u1zZMwU68NJc7+X+AStd4vAWg=="
   }
 }
 
@@ -50,4 +50,17 @@ module "publicip" {
   application_type = "${var.application_type}"
   resource_type    = "publicip"
   resource_group   = var.resource_group_name
+}
+module "vmlinux" {
+  source            = "./modules/vm"
+  location          = "${var.location}"
+  application_type  = "${var.application_type}"
+  resource_type     = "VMLinux"
+  resource_group    = var.resource_group
+  admin_username    = "agent"
+  admin_password    = "AzureDevOps@123"
+  computer_name     = "Myagent"
+  subnet_id         = "${module.network.subnet_id_test}"
+  public_ip_address = "${module.publicip.public_ip_address_id}"
+  
 }
