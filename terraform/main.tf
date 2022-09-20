@@ -56,7 +56,7 @@ module "vmlinux" {
   location          = "${var.location}"
   application_type  = "${var.application_type}"
   resource_type     = "VMLinux"
-  resource_group    = var.resource_group
+  resource_group    = var.resource_group_name
   admin_username    = "agent"
   admin_password    = "AzureDevOps@123"
   computer_name     = "Myagent"
