@@ -58,8 +58,8 @@ module "vmlinux" {
   resource_type     = "VMLinux"
   resource_group    = var.resource_group_name
   admin_username    = "agent"
-  admin_password    = "AzureDevOps@123"
-  computer_name     = "Myagent"
+  /* admin_password    = "AzureDevOps@123"
+  computer_name     = "Myagent" */
   subnet_id         = "${module.network.subnet_id_test}"
   public_ip_address = "${module.publicip.public_ip_address_id}"
   

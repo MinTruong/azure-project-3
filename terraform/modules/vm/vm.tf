@@ -23,11 +23,11 @@ resource "azurerm_linux_virtual_machine" "test" {
     username   = "${var.admin_username}"
     public_key = file("~/.ssh/id_rsa.pub")
   }
-  os_profile {
+  /* os_profile {
     computer_name  = var.computer_name
     admin_username = var.admin_username
     admin_password = var.admin_password
-  }
+  } */
   os_disk {
     caching           = "ReadWrite"
     storage_account_type = "Standard_LRS"
