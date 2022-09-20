@@ -45,8 +45,8 @@ pool: myAgentPool
     #     archiveType: zip
     #     archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
     #     replaceExistingArchive: true
-stages:
 
+stages:
 ####################################################################
 #                       Prepare environment                        #
 ####################################################################
@@ -112,131 +112,6 @@ stages:
                   terraform apply -auto-approve
 
 
-
-            
-####################################################################
-#                       Build Slenium zip                          #
-####################################################################
-- stage: Build
-  jobs:
-  - job: Build
-    pool:
-      vmImage: 'ubuntu-latest'
-      name: 'myAgentPool'
-    steps:
-    - task: ArchiveFiles@2
-      displayName: 'Archive Selenium tests'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium-tests.zip'
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium-tests.zip
-      displayName: 'Upload Selenium Tests'
-      artifact: selenium
-
-    - task: ArchiveFiles@2
-      displayName: 'Archive Postman tests'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-postman-tests.zip'
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-postman-tests.zip
-      displayName: 'Upload Postman Tests'
-      artifact: postman
-
-####################################################################
-#                       Run Test Slenium                           #
-####################################################################
-- stage: Deployment     
-  jobs:
-  - deployment: UITests
-    displayName: 'UI Tests'
-    pool:
-      vmImage: 'ubuntu-18.04'
-      name: myAgentPool
-    environment:  'TEST'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - download: current
-            displayName: Download selenium
-            artifact: selenium 
-          - task: Bash@3
-            displayName: 'Install Selenium'
-            inputs:
-              targetType: 'inline'
-              script: |
-                #! /bin/bash
-                
-                sudo apt-get upgrade -y
-                sudo apt-get install python3-pip -y
-                sudo apt-get install unzip -y
-                sudo apt-get install -y chromium-browser
-                sudo apt-get install -y chromium-chromedriver
-                pip3 install selenium==3.141.0
-                export PATH=$PATH:/usr/lib/chromium-browser/
-                cd $(Pipeline.Workspace)/selenium
-                unzip -o $(Pipeline.Workspace)/selenium/$(Build.BuildId)-selenium-tests -d .
-          - task: Bash@3
-            displayName: 'Run Selenium Tests'
-            inputs:
-              targetType: 'inline'
-              script: |
-                # python3.7 /home/myagent/myagent/_work/1/selenium/login.py > /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
-                python3 /home/myagent/myagent/_work/1/selenium/login.py | tee -a /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
-                cat /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
-                sudo cp /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log /var/log
-          
-          - download: current
-            displayName: Download postman
-            artifact: postman
-          - task: NodeTool@0
-            displayName: Install Node v16.X
-            inputs:
-              versionSpec: '16.x'
-          - task: Bash@3
-            displayName: 'Install newman'
-            inputs:
-              targetType: 'inline'
-              script: |
-                sudo apt install nodejs npm -y
-                nodejs --version
-                npm install -g newman
-                cd $(Pipeline.Workspace)/postman
-                unzip -o $(Pipeline.Workspace)/postman/$(Build.BuildId)-postman-tests -d .
-          - bash: |
-              newman run /home/myagent/myagent/_work/1/postman/P3_Validation_Tests.postman_collection.json \
-                        -e /home/myagent/myagent/_work/1/postman/P3_Validation_Tests_Environment.postman_environment.json \
-                        --reporters cli,junit \
-                        --reporter-junit-export log/newman/validationTestReport.xml \
-                        --suppress-exit-code
-            displayName: Validation Test
-
-          - bash: |
-              newman run /home/myagent/myagent/_work/1/postman/P3_Regression_Tests.postman_collection.json \
-                     -e /home/myagent/myagent/_work/1/postman/P3_Regression_Tests_Environment.postman_environment.json \
-                     --reporters cli,junit \
-                     --reporter-junit-export log/newman/regressionTestReport.xml \
-                     --suppress-exit-code
-            displayName: Regression Test
-          
-          - task: PublishPipelineArtifact@1
-            displayName: Publish Regression and Validation Test Reports as Artifacts
-            inputs:
-              targetPath: '$(System.DefaultWorkingDirectory)/log/newman'
-              artifactName: 'drop-integration-test'
-          - task: PublishTestResults@2
-            displayName: Publish Regression and Validation Test Reports
-            condition: always()
-            inputs:
-              testResultsFormat: 'JUnit'
-              testResultsFiles: '$(System.DefaultWorkingDirectory)/log/newman/*.xml'
-              mergeTestResults: true
-              testRunTitle: 'Regression and Validation Test Reports'
-
 ####################################################################
 #                       Build Fake App                             #
 ####################################################################
@@ -283,3 +158,127 @@ stages:
               appName: $(webAppName)
               appType: webApp
               package: $(Pipeline.Workspace)/fakerestapi/$(Build.BuildId)-fakerestapi.zip
+            
+# ####################################################################
+# #                       Build Slenium zip                          #
+# ####################################################################
+# - stage: Build
+#   jobs:
+#   - job: Build
+#     pool:
+#       vmImage: 'ubuntu-latest'
+#       name: 'myAgentPool'
+#     steps:
+#     - task: ArchiveFiles@2
+#       displayName: 'Archive Selenium tests'
+#       inputs:
+#         rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
+#         includeRootFolder: false
+#         archiveType: 'zip'
+#         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium-tests.zip'
+#     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium-tests.zip
+#       displayName: 'Upload Selenium Tests'
+#       artifact: selenium
+
+#     - task: ArchiveFiles@2
+#       displayName: 'Archive Postman tests'
+#       inputs:
+#         rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+#         includeRootFolder: false
+#         archiveType: 'zip'
+#         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-postman-tests.zip'
+#     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-postman-tests.zip
+#       displayName: 'Upload Postman Tests'
+#       artifact: postman
+
+# ####################################################################
+# #                       Run Test Slenium                           #
+# ####################################################################
+# - stage: Deployment     
+#   jobs:
+#   - deployment: UITests
+#     displayName: 'UI Tests'
+#     pool:
+#       vmImage: 'ubuntu-18.04'
+#       name: myAgentPool
+#     environment:  'TEST'
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:
+#           - download: current
+#             displayName: Download selenium
+#             artifact: selenium 
+#           - task: Bash@3
+#             displayName: 'Install Selenium'
+#             inputs:
+#               targetType: 'inline'
+#               script: |
+#                 #! /bin/bash
+                
+#                 sudo apt-get upgrade -y
+#                 sudo apt-get install python3-pip -y
+#                 sudo apt-get install unzip -y
+#                 sudo apt-get install -y chromium-browser
+#                 sudo apt-get install -y chromium-chromedriver
+#                 pip3 install selenium==3.141.0
+#                 export PATH=$PATH:/usr/lib/chromium-browser/
+#                 cd $(Pipeline.Workspace)/selenium
+#                 unzip -o $(Pipeline.Workspace)/selenium/$(Build.BuildId)-selenium-tests -d .
+#           - task: Bash@3
+#             displayName: 'Run Selenium Tests'
+#             inputs:
+#               targetType: 'inline'
+#               script: |
+#                 # python3.7 /home/myagent/myagent/_work/1/selenium/login.py > /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
+#                 python3 /home/myagent/myagent/_work/1/selenium/login.py | tee -a /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
+#                 cat /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
+#                 sudo cp /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log /var/log
+          
+#           - download: current
+#             displayName: Download postman
+#             artifact: postman
+#           - task: NodeTool@0
+#             displayName: Install Node v16.X
+#             inputs:
+#               versionSpec: '16.x'
+#           - task: Bash@3
+#             displayName: 'Install newman'
+#             inputs:
+#               targetType: 'inline'
+#               script: |
+#                 sudo apt install nodejs npm -y
+#                 nodejs --version
+#                 npm install -g newman
+#                 cd $(Pipeline.Workspace)/postman
+#                 unzip -o $(Pipeline.Workspace)/postman/$(Build.BuildId)-postman-tests -d .
+#           - bash: |
+#               newman run /home/myagent/myagent/_work/1/postman/P3_Validation_Tests.postman_collection.json \
+#                         -e /home/myagent/myagent/_work/1/postman/P3_Validation_Tests_Environment.postman_environment.json \
+#                         --reporters cli,junit \
+#                         --reporter-junit-export log/newman/validationTestReport.xml \
+#                         --suppress-exit-code
+#             displayName: Validation Test
+
+#           - bash: |
+#               newman run /home/myagent/myagent/_work/1/postman/P3_Regression_Tests.postman_collection.json \
+#                      -e /home/myagent/myagent/_work/1/postman/P3_Regression_Tests_Environment.postman_environment.json \
+#                      --reporters cli,junit \
+#                      --reporter-junit-export log/newman/regressionTestReport.xml \
+#                      --suppress-exit-code
+#             displayName: Regression Test
+          
+#           - task: PublishPipelineArtifact@1
+#             displayName: Publish Regression and Validation Test Reports as Artifacts
+#             inputs:
+#               targetPath: '$(System.DefaultWorkingDirectory)/log/newman'
+#               artifactName: 'drop-integration-test'
+#           - task: PublishTestResults@2
+#             displayName: Publish Regression and Validation Test Reports
+#             condition: always()
+#             inputs:
+#               testResultsFormat: 'JUnit'
+#               testResultsFiles: '$(System.DefaultWorkingDirectory)/log/newman/*.xml'
+#               mergeTestResults: true
+#               testRunTitle: 'Regression and Validation Test Reports'
+

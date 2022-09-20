@@ -1,0 +1,11 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1663665162509,1195,Get Books,200,OK,Endurance Test 1-1,text,true,,5586,151,10,10,https://webapp-appservice.azurewebsites.net/api/Books/2,1195,0,868
+1663665162612,1154,Get Books,200,OK,Endurance Test 1-2,text,true,,4554,151,9,9,https://webapp-appservice.azurewebsites.net/api/Books/3,1153,0,794
+1663665162712,1156,Get Books,200,OK,Endurance Test 1-3,text,true,,4191,151,8,8,https://webapp-appservice.azurewebsites.net/api/Books/4,1156,0,802
+1663665162813,1121,Get Books,200,OK,Endurance Test 1-4,text,true,,4821,151,7,7,https://webapp-appservice.azurewebsites.net/api/Books/5,1116,0,770
+1663665162913,1085,Get Books,200,OK,Endurance Test 1-5,text,true,,3606,151,6,6,https://webapp-appservice.azurewebsites.net/api/Books/6,1085,0,760
+1663665163013,1097,Get Books,200,OK,Endurance Test 1-6,text,true,,5816,151,5,5,https://webapp-appservice.azurewebsites.net/api/Books/7,1097,0,763
+1663665163112,1100,Get Books,200,OK,Endurance Test 1-7,text,true,,3375,151,4,4,https://webapp-appservice.azurewebsites.net/api/Books/8,1100,0,756
+1663665163213,1094,Get Books,200,OK,Endurance Test 1-8,text,true,,4685,151,3,3,https://webapp-appservice.azurewebsites.net/api/Books/9,1094,0,761
+1663665163312,1080,Get Books,200,OK,Endurance Test 1-9,text,true,,5120,152,2,2,https://webapp-appservice.azurewebsites.net/api/Books/10,1080,0,749
+1663665163413,1105,Get Books,200,OK,Endurance Test 1-10,text,true,,4147,151,1,1,https://webapp-appservice.azurewebsites.net/api/Books/2,1105,0,762
