@@ -2,7 +2,7 @@ trigger:
 - master
 variables:
   python.version: '3.7.6'
-  webAppName: 'mywebapp208003'
+  webAppName: 'webApp-AppService'
   azureServiceConnectionId: 'myConnection'
 pool: myAgentPool
 
@@ -263,7 +263,9 @@ stages:
 ####################################################################
 #                       Deploy Fake App                            #
 ####################################################################
-- stage:
+- stage: DeployFakeApp
+  dependsOn: BuildFakeRestAPI
+  condition: succeeded()
   jobs:
   - deployment: FakeRestAPI
     pool:
