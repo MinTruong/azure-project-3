@@ -248,7 +248,6 @@ stages:
     pool:
       name: myAgentPool
       vmImage: 'ubuntu-18.04'
-    environment:  'DEV'
     steps:
     - task: ArchiveFiles@2
       displayName: 'Archive FakeRestAPI'
