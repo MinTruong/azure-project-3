@@ -6,109 +6,109 @@ variables:
   azureServiceConnectionId: 'myConnection'
 pool: myAgentPool
 stages:
-####################################################################
-#                       Prepare environment                        #
-####################################################################
-- stage: Prepare
-  displayName: Prepare environment 
-  jobs: 
-  - deployment: deploy_terraform
-    continueOnError: false
-    environment: 'TEST'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-            - checkout: self
+# ####################################################################
+# #                       Prepare environment                        #
+# ####################################################################
+# - stage: Prepare
+#   displayName: Prepare environment 
+#   jobs: 
+#   - deployment: deploy_terraform
+#     continueOnError: false
+#     environment: 'TEST'
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:
+#             - checkout: self
 
-            ######### Step 1: Install Terraform ##########
-            - task: Bash@3
-              displayName: install zip
-              inputs:
-                targetType: 'inline'
-                script: |
-                  # Write your commands here
-                  sudo apt-get -y install zip
+#             ######### Step 1: Install Terraform ##########
+#             - task: Bash@3
+#               displayName: install zip
+#               inputs:
+#                 targetType: 'inline'
+#                 script: |
+#                   # Write your commands here
+#                   sudo apt-get -y install zip
 
-            - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
-              displayName: install terraform
-              inputs:
-                terraformVersion: latest   
+#             - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
+#               displayName: install terraform
+#               inputs:
+#                 terraformVersion: latest   
 
-            - task: Bash@3
-              displayName: init terraform
-              inputs:
-                targetType: 'inline'
-                script: |
-                  # Write your commands here
-                  cd terraform
-                  terraform init
+#             - task: Bash@3
+#               displayName: init terraform
+#               inputs:
+#                 targetType: 'inline'
+#                 script: |
+#                   # Write your commands here
+#                   cd terraform
+#                   terraform init
 
-          ######### Step 2: Initialise workspace using terraform init ##########
+#           ######### Step 2: Initialise workspace using terraform init ##########
             
-            - task: TerraformCLI@0
-              inputs:
-                command: 'plan'
-                workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-                allowTelemetryCollection: true
+#             - task: TerraformCLI@0
+#               inputs:
+#                 command: 'plan'
+#                 workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+#                 allowTelemetryCollection: true
 
-            ######### Step 3: Deploy Webapp terraform apply ##########
-            - task: Bash@3
-              displayName: apply terraform
-              inputs:
-                targetType: 'inline'
-                script: |
-                  # Write your commands here
-                  cd terraform
-                  terraform apply -auto-approve
+#             ######### Step 3: Deploy Webapp terraform apply ##########
+#             - task: Bash@3
+#               displayName: apply terraform
+#               inputs:
+#                 targetType: 'inline'
+#                 script: |
+#                   # Write your commands here
+#                   cd terraform
+#                   terraform apply -auto-approve
 
 
-####################################################################
-#                       Build Fake App                             #
-####################################################################
+# ####################################################################
+# #                       Build Fake App                             #
+# ####################################################################
 
-- stage: BuildFakeRestAPI
-  jobs:
-  - job: 'BuildFakeapp'
-    displayName: 'Build Fake app Rest API'
-    pool:
-      name: myAgentPool
-      vmImage: 'ubuntu-18.04'
-    steps:
-    - task: ArchiveFiles@2
-      displayName: 'Archive FakeRestAPI'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/fakerestapi'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
-      displayName: 'Upload Package'
-      artifact: fakerestapi
+# - stage: BuildFakeRestAPI
+#   jobs:
+#   - job: 'BuildFakeapp'
+#     displayName: 'Build Fake app Rest API'
+#     pool:
+#       name: myAgentPool
+#       vmImage: 'ubuntu-18.04'
+#     steps:
+#     - task: ArchiveFiles@2
+#       displayName: 'Archive FakeRestAPI'
+#       inputs:
+#         rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/fakerestapi'
+#         includeRootFolder: false
+#         archiveType: 'zip'
+#         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
+#     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
+#       displayName: 'Upload Package'
+#       artifact: fakerestapi
 
-####################################################################
-#                       Deploy Fake App                            #
-####################################################################
-- stage: DeployFakeApp
-  dependsOn: BuildFakeRestAPI
-  condition: succeeded()
-  jobs:
-  - deployment: FakeRestAPI
-    pool:
-      vmImage: 'Ubuntu-16.04'
-      name: myAgentPool
-    environment: 'DEV'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: AzureWebApp@1
-            displayName: 'Deploy Azure Web App'
-            inputs:
-              azureSubscription: $(azureServiceConnectionId)
-              appName: $(webAppName)
-              appType: webApp
-              package: $(Pipeline.Workspace)/fakerestapi/$(Build.BuildId)-fakerestapi.zip
+# ####################################################################
+# #                       Deploy Fake App                            #
+# ####################################################################
+# - stage: DeployFakeApp
+#   dependsOn: BuildFakeRestAPI
+#   condition: succeeded()
+#   jobs:
+#   - deployment: FakeRestAPI
+#     pool:
+#       vmImage: 'Ubuntu-16.04'
+#       name: myAgentPool
+#     environment: 'DEV'
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:
+#           - task: AzureWebApp@1
+#             displayName: 'Deploy Azure Web App'
+#             inputs:
+#               azureSubscription: $(azureServiceConnectionId)
+#               appName: $(webAppName)
+#               appType: webApp
+#               package: $(Pipeline.Workspace)/fakerestapi/$(Build.BuildId)-fakerestapi.zip
             
 ####################################################################
 #                       Build Test   zip                           #
@@ -131,27 +131,27 @@ stages:
       displayName: 'Upload Selenium Tests'
       artifact: selenium
 
-    - task: ArchiveFiles@2
-      displayName: 'Archive Postman tests'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-postman-tests.zip'
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-postman-tests.zip
-      displayName: 'Upload Postman Tests'
-      artifact: postman
+    # - task: ArchiveFiles@2
+    #   displayName: 'Archive Postman tests'
+    #   inputs:
+    #     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+    #     includeRootFolder: false
+    #     archiveType: 'zip'
+    #     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-postman-tests.zip'
+    # - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-postman-tests.zip
+    #   displayName: 'Upload Postman Tests'
+    #   artifact: postman
 
-    - task: ArchiveFiles@2
-      displayName: 'Archive Jmeter tests'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-jmeter-tests.zip'
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-jmeter-tests.zip
-      displayName: 'Upload JMeter Tests'
-      artifact: jmeter
+    # - task: ArchiveFiles@2
+    #   displayName: 'Archive Jmeter tests'
+    #   inputs:
+    #     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
+    #     includeRootFolder: false
+    #     archiveType: 'zip'
+    #     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-jmeter-tests.zip'
+    # - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-jmeter-tests.zip
+    #   displayName: 'Upload JMeter Tests'
+    #   artifact: jmeter
 
 ####################################################################
 #                            Run Test                              #
@@ -198,131 +198,131 @@ stages:
                 # python3.7 /home/myagent/myagent/_work/1/selenium/login.py > /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
                 python3 /home/myagent/myagent/_work/1/selenium/login.py | tee -a /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
                 cat /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
-                sudo cp /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log /var/log
+                sudo cp /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log /home/myagent
           
-          ####################################################################
-          #                       Postman  Test                              #
-          ####################################################################
-          - download: current
-            displayName: Download postman
-            artifact: postman
-          - task: NodeTool@0
-            displayName: Install Node v16.X
-            inputs:
-              versionSpec: '16.x'
-          - task: Bash@3
-            displayName: 'Install newman'
-            inputs:
-              targetType: 'inline'
-              script: |
-                sudo apt install nodejs npm -y
-                nodejs --version
-                npm install -g newman
-                cd $(Pipeline.Workspace)/postman
-                unzip -o $(Pipeline.Workspace)/postman/$(Build.BuildId)-postman-tests -d .
-          - bash: |
-              newman run /home/myagent/myagent/_work/1/postman/P3_Validation_Tests.postman_collection.json \
-                        -e /home/myagent/myagent/_work/1/postman/P3_Validation_Tests_Environment.postman_environment.json \
-                        --reporters cli,junit \
-                        --reporter-junit-export log/newman/validationTestReport.xml \
-                        --suppress-exit-code
-            displayName: Validation Test (http://dummy.restapiexample.com)
+          # ####################################################################
+          # #                       Postman  Test                              #
+          # ####################################################################
+          # - download: current
+          #   displayName: Download postman
+          #   artifact: postman
+          # - task: NodeTool@0
+          #   displayName: Install Node v16.X
+          #   inputs:
+          #     versionSpec: '16.x'
+          # - task: Bash@3
+          #   displayName: 'Install newman'
+          #   inputs:
+          #     targetType: 'inline'
+          #     script: |
+          #       sudo apt install nodejs npm -y
+          #       nodejs --version
+          #       npm install -g newman
+          #       cd $(Pipeline.Workspace)/postman
+          #       unzip -o $(Pipeline.Workspace)/postman/$(Build.BuildId)-postman-tests -d .
+          # - bash: |
+          #     newman run /home/myagent/myagent/_work/1/postman/P3_Validation_Tests.postman_collection.json \
+          #               -e /home/myagent/myagent/_work/1/postman/P3_Validation_Tests_Environment.postman_environment.json \
+          #               --reporters cli,junit \
+          #               --reporter-junit-export log/newman/validationTestReport.xml \
+          #               --suppress-exit-code
+          #   displayName: Validation Test (http://dummy.restapiexample.com)
 
-          - bash: |
-              newman run /home/myagent/myagent/_work/1/postman/P3_Regression_Tests.postman_collection.json \
-                     -e /home/myagent/myagent/_work/1/postman/P3_Regression_Tests_Environment.postman_environment.json \
-                     --reporters cli,junit \
-                     --reporter-junit-export log/newman/regressionTestReport.xml \
-                     --suppress-exit-code
-            displayName: Regression Test (http://dummy.restapiexample.com)
+          # - bash: |
+          #     newman run /home/myagent/myagent/_work/1/postman/P3_Regression_Tests.postman_collection.json \
+          #            -e /home/myagent/myagent/_work/1/postman/P3_Regression_Tests_Environment.postman_environment.json \
+          #            --reporters cli,junit \
+          #            --reporter-junit-export log/newman/regressionTestReport.xml \
+          #            --suppress-exit-code
+          #   displayName: Regression Test (http://dummy.restapiexample.com)
           
-          - bash: |
-              newman run /home/myagent/myagent/_work/1/postman/P3_Validation_Tests_2.postman_collection.json \
-                        -e /home/myagent/myagent/_work/1/postman/P3_Validation_Tests_Environment_2.postman_environment.json \
-                        --reporters cli,junit \
-                        --reporter-junit-export log/newman/validationTestReport_2.xml \
-                        --suppress-exit-code
-            displayName: Validation Test (https://jsonmonk.com/api/v1/users)
+          # - bash: |
+          #     newman run /home/myagent/myagent/_work/1/postman/P3_Validation_Tests_2.postman_collection.json \
+          #               -e /home/myagent/myagent/_work/1/postman/P3_Validation_Tests_Environment_2.postman_environment.json \
+          #               --reporters cli,junit \
+          #               --reporter-junit-export log/newman/validationTestReport_2.xml \
+          #               --suppress-exit-code
+          #   displayName: Validation Test (https://jsonmonk.com/api/v1/users)
 
-          - bash: |
-              newman run /home/myagent/myagent/_work/1/postman/P3_Regression_Tests_2.postman_collection.json \
-                     -e /home/myagent/myagent/_work/1/postman/P3_Regression_Tests_Environment_2.postman_environment.json \
-                     --reporters cli,junit \
-                     --reporter-junit-export log/newman/regressionTestReport_2.xml \
-                     --suppress-exit-code
-            displayName: Regression Test (https://jsonmonk.com/api/v1/users)
+          # - bash: |
+          #     newman run /home/myagent/myagent/_work/1/postman/P3_Regression_Tests_2.postman_collection.json \
+          #            -e /home/myagent/myagent/_work/1/postman/P3_Regression_Tests_Environment_2.postman_environment.json \
+          #            --reporters cli,junit \
+          #            --reporter-junit-export log/newman/regressionTestReport_2.xml \
+          #            --suppress-exit-code
+          #   displayName: Regression Test (https://jsonmonk.com/api/v1/users)
 
-          - task: PublishPipelineArtifact@1
-            displayName: Publish Regression and Validation Test Reports as Artifacts
-            inputs:
-              targetPath: '$(System.DefaultWorkingDirectory)/log/newman'
-              artifactName: 'drop-integration-test'
-          - task: PublishTestResults@2
-            displayName: Publish Validation Test Reports (http://dummy.restapiexample.com)
-            condition: always()
-            inputs:
-              testResultsFormat: 'JUnit'
-              testResultsFiles: '$(System.DefaultWorkingDirectory)/log/newman/validationTestReport.xml'
-              mergeTestResults: true
-              testRunTitle: 'Validation Test Reports (http://dummy.restapiexample.com)'
-          - task: PublishTestResults@2
-            displayName: Publish Regression Test Reports (http://dummy.restapiexample.com)
-            condition: always()
-            inputs:
-              testResultsFormat: 'JUnit'
-              testResultsFiles: '$(System.DefaultWorkingDirectory)/log/newman/regressionTestReport.xml'
-              mergeTestResults: true
-              testRunTitle: 'Regression Test Reports (http://dummy.restapiexample.com)'
-          - task: PublishTestResults@2
-            displayName: Publish Validation Test Reports (https://jsonmonk.com/api/v1/users)
-            condition: always()
-            inputs:
-              testResultsFormat: 'JUnit'
-              testResultsFiles: '$(System.DefaultWorkingDirectory)/log/newman/validationTestReport_2.xml'
-              mergeTestResults: true
-              testRunTitle: 'Validation Test Reports (https://jsonmonk.com/api/v1/users)'
-          - task: PublishTestResults@2
-            displayName: Publish Regression Test Reports (https://jsonmonk.com/api/v1/users)
-            condition: always()
-            inputs:
-              testResultsFormat: 'JUnit'
-              testResultsFiles: '$(System.DefaultWorkingDirectory)/log/newman/regressionTestReport_2.xml'
-              mergeTestResults: true
-              testRunTitle: 'Regression Test Reports (https://jsonmonk.com/api/v1/users)'
+          # - task: PublishPipelineArtifact@1
+          #   displayName: Publish Regression and Validation Test Reports as Artifacts
+          #   inputs:
+          #     targetPath: '$(System.DefaultWorkingDirectory)/log/newman'
+          #     artifactName: 'drop-integration-test'
+          # - task: PublishTestResults@2
+          #   displayName: Publish Validation Test Reports (http://dummy.restapiexample.com)
+          #   condition: always()
+          #   inputs:
+          #     testResultsFormat: 'JUnit'
+          #     testResultsFiles: '$(System.DefaultWorkingDirectory)/log/newman/validationTestReport.xml'
+          #     mergeTestResults: true
+          #     testRunTitle: 'Validation Test Reports (http://dummy.restapiexample.com)'
+          # - task: PublishTestResults@2
+          #   displayName: Publish Regression Test Reports (http://dummy.restapiexample.com)
+          #   condition: always()
+          #   inputs:
+          #     testResultsFormat: 'JUnit'
+          #     testResultsFiles: '$(System.DefaultWorkingDirectory)/log/newman/regressionTestReport.xml'
+          #     mergeTestResults: true
+          #     testRunTitle: 'Regression Test Reports (http://dummy.restapiexample.com)'
+          # - task: PublishTestResults@2
+          #   displayName: Publish Validation Test Reports (https://jsonmonk.com/api/v1/users)
+          #   condition: always()
+          #   inputs:
+          #     testResultsFormat: 'JUnit'
+          #     testResultsFiles: '$(System.DefaultWorkingDirectory)/log/newman/validationTestReport_2.xml'
+          #     mergeTestResults: true
+          #     testRunTitle: 'Validation Test Reports (https://jsonmonk.com/api/v1/users)'
+          # - task: PublishTestResults@2
+          #   displayName: Publish Regression Test Reports (https://jsonmonk.com/api/v1/users)
+          #   condition: always()
+          #   inputs:
+          #     testResultsFormat: 'JUnit'
+          #     testResultsFiles: '$(System.DefaultWorkingDirectory)/log/newman/regressionTestReport_2.xml'
+          #     mergeTestResults: true
+          #     testRunTitle: 'Regression Test Reports (https://jsonmonk.com/api/v1/users)'
 
-          ####################################################################
-          #                       JMeter   Test                              #
-          ####################################################################
-          - download: current
-            displayName: Download JMeter
-            artifact: jmeter
-          - task: Bash@3
-            displayName: Install JMeter
-            inputs:
-              targetType: 'inline'
-              script: |
-                sudo apt-get install openjdk-11-jre-headless -y
-                wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.1.tgz -O jmeter.tgz
-                tar -xzvf jmeter.tgz
+          # ####################################################################
+          # #                       JMeter   Test                              #
+          # ####################################################################
+          # - download: current
+          #   displayName: Download JMeter
+          #   artifact: jmeter
+          # - task: Bash@3
+          #   displayName: Install JMeter
+          #   inputs:
+          #     targetType: 'inline'
+          #     script: |
+          #       sudo apt-get install openjdk-11-jre-headless -y
+          #       wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.1.tgz -O jmeter.tgz
+          #       tar -xzvf jmeter.tgz
 
-                cd $(Pipeline.Workspace)/jmeter
-                unzip -o $(Pipeline.Workspace)/jmeter/$(Build.BuildId)-jmeter-tests -d .
+          #       cd $(Pipeline.Workspace)/jmeter
+          #       unzip -o $(Pipeline.Workspace)/jmeter/$(Build.BuildId)-jmeter-tests -d .
           
-          - task: Bash@3
-            displayName: Run JMeter tests
-            inputs:
-              targetType: 'inline'
-              script: |
-                apache-jmeter-5.4.1/bin/jmeter -n -t /home/myagent/myagent/_work/1/jmeter/endurance.jmx \
-                  -l /home/myagent/myagent/_work/1/jmeter/cicd-endurance-results.csv \
-                  -e -f -o /home/myagent/myagent/_work/1/jmeter/cicd-endurance-test-report.html \
-                  -j /home/myagent/myagent/_work/1/jmeter/cicd-endurance-test.log
+          # - task: Bash@3
+          #   displayName: Run JMeter tests
+          #   inputs:
+          #     targetType: 'inline'
+          #     script: |
+          #       apache-jmeter-5.4.1/bin/jmeter -n -t /home/myagent/myagent/_work/1/jmeter/endurance.jmx \
+          #         -l /home/myagent/myagent/_work/1/jmeter/cicd-endurance-results.csv \
+          #         -e -f -o /home/myagent/myagent/_work/1/jmeter/cicd-endurance-test-report.html \
+          #         -j /home/myagent/myagent/_work/1/jmeter/cicd-endurance-test.log
                 
-                cd /home/myagent/myagent/_work/1/jmeter/
-                ls -la
-                echo "---------------------cicd-endurance-results.csv---------------------"
-                cat cicd-endurance-results.csv
-                echo "---------------------cicd-endurance-test-report.html---------------------"
-                cat cicd-endurance-test-report.html
-                echo "---------------------cicd-endurance-test.log---------------------"
-                cat cicd-endurance-test.log
+          #       cd /home/myagent/myagent/_work/1/jmeter/
+          #       ls -la
+          #       echo "---------------------cicd-endurance-results.csv---------------------"
+          #       cat cicd-endurance-results.csv
+          #       echo "---------------------cicd-endurance-test-report.html---------------------"
+          #       cat cicd-endurance-test-report.html
+          #       echo "---------------------cicd-endurance-test.log---------------------"
+          #       cat cicd-endurance-test.log
