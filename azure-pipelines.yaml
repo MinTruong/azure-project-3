@@ -142,16 +142,16 @@ stages:
       displayName: 'Upload Postman Tests'
       artifact: postman
 
-      - task: ArchiveFiles@2
-        displayName: 'Archive Jmeter tests'
-        inputs:
-          rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
-          includeRootFolder: false
-          archiveType: 'zip'
-          archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-jmeter-tests.zip'
-      - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-jmeter-tests.zip
-        displayName: 'Upload JMeter Tests'
-        artifact: jmeter
+    - task: ArchiveFiles@2
+      displayName: 'Archive Jmeter tests'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-jmeter-tests.zip'
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-jmeter-tests.zip
+      displayName: 'Upload JMeter Tests'
+      artifact: jmeter
 
 ####################################################################
 #                            Run Test                              #
