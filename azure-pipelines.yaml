@@ -6,120 +6,120 @@ variables:
   azureServiceConnectionId: 'myConnection'
 pool: myAgentPool
 stages:
-####################################################################
-#                       Prepare environment                        #
-####################################################################
-- stage: Prepare
-  displayName: Prepare environment 
-  jobs: 
-  - deployment: deploy_terraform
-    continueOnError: false
-    environment: 'TEST'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-            - checkout: self
+# ####################################################################
+# #                       Prepare environment                        #
+# ####################################################################
+# - stage: Prepare
+#   displayName: Prepare environment 
+#   jobs: 
+#   - deployment: deploy_terraform
+#     continueOnError: false
+#     environment: 'TEST'
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:
+#             - checkout: self
 
-            ######### Step 1: Install Terraform ##########
-            - task: Bash@3
-              displayName: install zip
-              inputs:
-                targetType: 'inline'
-                script: |
-                  # Write your commands here
-                  sudo apt-get -y install zip
-            # - task: TerraformInstaller@0
-            #   displayName: install terraform
-            #   inputs:
-            #     terraformVersion: 'latest'
-            - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
-              displayName: install terraform
-              inputs:
-                terraformVersion: latest   
+#             ######### Step 1: Install Terraform ##########
+#             - task: Bash@3
+#               displayName: install zip
+#               inputs:
+#                 targetType: 'inline'
+#                 script: |
+#                   # Write your commands here
+#                   sudo apt-get -y install zip
+#             # - task: TerraformInstaller@0
+#             #   displayName: install terraform
+#             #   inputs:
+#             #     terraformVersion: 'latest'
+#             - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
+#               displayName: install terraform
+#               inputs:
+#                 terraformVersion: latest   
 
-            - task: Bash@3
-              displayName: init terraform
-              inputs:
-                targetType: 'inline'
-                script: |
-                  # Write your commands here
-                  cd terraform
-                  terraform init
+#             - task: Bash@3
+#               displayName: init terraform
+#               inputs:
+#                 targetType: 'inline'
+#                 script: |
+#                   # Write your commands here
+#                   cd terraform
+#                   terraform init
 
-          ######### Step 2: Initialise workspace using terraform init ##########
+#           ######### Step 2: Initialise workspace using terraform init ##########
             
-            - task: TerraformCLI@0
-              inputs:
-                command: 'plan'
-                workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-                allowTelemetryCollection: true
-            # - task: Bash@3
-            #   displayName: plan terraform
-            #   inputs:
-            #     targetType: 'inline'
-            #     script: |
-            #       # Write your commands here
-            #       cd terraform
-            #       terraform plan
+#             - task: TerraformCLI@0
+#               inputs:
+#                 command: 'plan'
+#                 workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+#                 allowTelemetryCollection: true
+#             # - task: Bash@3
+#             #   displayName: plan terraform
+#             #   inputs:
+#             #     targetType: 'inline'
+#             #     script: |
+#             #       # Write your commands here
+#             #       cd terraform
+#             #       terraform plan
 
-            ######### Step 3: Deploy Webapp terraform apply ##########
-            - task: Bash@3
-              displayName: apply terraform
-              inputs:
-                targetType: 'inline'
-                script: |
-                  # Write your commands here
-                  cd terraform
-                  terraform apply -auto-approve
+#             ######### Step 3: Deploy Webapp terraform apply ##########
+#             - task: Bash@3
+#               displayName: apply terraform
+#               inputs:
+#                 targetType: 'inline'
+#                 script: |
+#                   # Write your commands here
+#                   cd terraform
+#                   terraform apply -auto-approve
 
 
-####################################################################
-#                       Build Fake App                             #
-####################################################################
+# ####################################################################
+# #                       Build Fake App                             #
+# ####################################################################
 
-- stage: BuildFakeRestAPI
-  jobs:
-  - job: 'BuildFakeapp'
-    displayName: 'Build Fake app Rest API'
-    pool:
-      name: myAgentPool
-      vmImage: 'ubuntu-18.04'
-    steps:
-    - task: ArchiveFiles@2
-      displayName: 'Archive FakeRestAPI'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/fakerestapi'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
-      displayName: 'Upload Package'
-      artifact: fakerestapi
+# - stage: BuildFakeRestAPI
+#   jobs:
+#   - job: 'BuildFakeapp'
+#     displayName: 'Build Fake app Rest API'
+#     pool:
+#       name: myAgentPool
+#       vmImage: 'ubuntu-18.04'
+#     steps:
+#     - task: ArchiveFiles@2
+#       displayName: 'Archive FakeRestAPI'
+#       inputs:
+#         rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/fakerestapi'
+#         includeRootFolder: false
+#         archiveType: 'zip'
+#         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
+#     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
+#       displayName: 'Upload Package'
+#       artifact: fakerestapi
 
-####################################################################
-#                       Deploy Fake App                            #
-####################################################################
-- stage: DeployFakeApp
-  dependsOn: BuildFakeRestAPI
-  condition: succeeded()
-  jobs:
-  - deployment: FakeRestAPI
-    pool:
-      vmImage: 'Ubuntu-16.04'
-      name: myAgentPool
-    environment: 'DEV'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: AzureWebApp@1
-            displayName: 'Deploy Azure Web App'
-            inputs:
-              azureSubscription: $(azureServiceConnectionId)
-              appName: $(webAppName)
-              appType: webApp
-              package: $(Pipeline.Workspace)/fakerestapi/$(Build.BuildId)-fakerestapi.zip
+# ####################################################################
+# #                       Deploy Fake App                            #
+# ####################################################################
+# - stage: DeployFakeApp
+#   dependsOn: BuildFakeRestAPI
+#   condition: succeeded()
+#   jobs:
+#   - deployment: FakeRestAPI
+#     pool:
+#       vmImage: 'Ubuntu-16.04'
+#       name: myAgentPool
+#     environment: 'DEV'
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:
+#           - task: AzureWebApp@1
+#             displayName: 'Deploy Azure Web App'
+#             inputs:
+#               azureSubscription: $(azureServiceConnectionId)
+#               appName: $(webAppName)
+#               appType: webApp
+#               package: $(Pipeline.Workspace)/fakerestapi/$(Build.BuildId)-fakerestapi.zip
             
 ####################################################################
 #                       Build Test   zip                           #
@@ -276,12 +276,18 @@ stages:
               targetType: 'inline'
               script: |
                 apache-jmeter-5.4.1/bin/jmeter -n -t /home/myagent/myagent/_work/1/jmeter/endurance.jmx \
-                  -l /home/myagent/myagent/_work/1/jmeter/endurance-results.csv \
-                  -e -f -o /home/myagent/myagent/_work/1/jmeter/endurance-test-report.html \
-                  -j /home/myagent/myagent/_work/1/jmeter/endurance-test.log
+                  -l /home/myagent/myagent/_work/1/jmeter/cicd-endurance-results.csv \
+                  -e -f -o /home/myagent/myagent/_work/1/jmeter/cicd-endurance-test-report.html \
+                  -j /home/myagent/myagent/_work/1/jmeter/cicd-endurance-test.log
                 
                 cd /home/myagent/myagent/_work/1/jmeter/
                 ls -la
+                echo "---------------------cicd-endurance-results.csv---------------------"
+                cat cicd-endurance-results.csv
+                echo "---------------------cicd-endurance-test-report.html---------------------"
+                cat cicd-endurance-test-report.html
+                echo "---------------------cicd-endurance-test.log---------------------"
+                cat cicd-endurance-test.log
 # - stage: PerformanceTest
 #   displayName: Performance Tests
 #   jobs:
