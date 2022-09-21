@@ -198,7 +198,7 @@ stages:
                 # python3.7 /home/myagent/myagent/_work/1/selenium/login.py > /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
                 python3 /home/myagent/myagent/_work/1/selenium/login.py | tee -a /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
                 cat /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
-                # sudo cp /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log /var/log
+                sudo cp /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log /var/log
           
           ####################################################################
           #                       Postman  Test                              #
