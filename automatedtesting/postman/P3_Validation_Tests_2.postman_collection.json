@@ -13,10 +13,10 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"var user_id = pm.environment.get(\"user_id\");\r",
-							"pm.test(\"Body matches string\", function () {\r",
-							"    pm.expect(pm.response.text()).to.include(\"Minh\");\r",
-							"});"
+							"// var user_id = pm.environment.get(\"user_id\");\r",
+							"// pm.test(\"Body matches string\", function () {\r",
+							"//     pm.expect(pm.response.text()).to.include(\"Minh\");\r",
+							"// });"
 						],
 						"type": "text/javascript"
 					}
@@ -26,16 +26,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://jsonmonk.com/api/v1/users",
-					"protocol": "https",
+					"raw": "{{url}}/{{user_id}}",
 					"host": [
-						"jsonmonk",
-						"com"
+						"{{url}}"
 					],
 					"path": [
-						"api",
-						"v1",
-						"users"
+						"{{user_id}}"
 					]
 				}
 			},
