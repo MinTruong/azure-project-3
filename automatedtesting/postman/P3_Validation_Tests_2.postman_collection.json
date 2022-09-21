@@ -13,10 +13,10 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"// var user_id = pm.environment.get(\"user_id\");\r",
-							"// pm.test(\"Body matches string\", function () {\r",
-							"//     pm.expect(pm.response.text()).to.include(\"Minh\");\r",
-							"// });"
+							"var user_id = pm.environment.get(\"user_id\");\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Minh\");\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
