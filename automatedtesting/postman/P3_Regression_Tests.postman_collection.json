@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "c36f3824-904b-47a1-918d-2acda1b61abe",
+		"_postman_id": "d0d67998-4885-4717-8577-60737a4f0fe5",
 		"name": "P3_Regression_Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "13391030"
@@ -87,7 +87,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{url}}/api/{{version}}/employee/24",
+					"raw": "{{url}}/api/{{version}}/employee/2",
 					"host": [
 						"{{url}}"
 					],
@@ -95,7 +95,7 @@
 						"api",
 						"{{version}}",
 						"employee",
-						"24"
+						"2"
 					]
 				},
 				"description": "Get a single employee data"
@@ -144,14 +144,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{url}}/api/{{version}}/update/{{id}}",
+					"raw": "{{url}}/{{api_path_update}}/{{id}}",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
-						"api",
-						"{{version}}",
-						"update",
+						"{{api_path_update}}",
 						"{{id}}"
 					]
 				},
