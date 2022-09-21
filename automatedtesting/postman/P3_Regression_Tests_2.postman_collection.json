@@ -1,0 +1,75 @@
+{
+	"info": {
+		"_postman_id": "e396002f-cc4b-4ac6-be77-6fd86c263b59",
+		"name": "P3_Regression_Tests_2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13391030"
+	},
+	"item": [
+		{
+			"name": "Get",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var user_id = pm.environment.get(\"user_id\");\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Minh\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://jsonmonk.com/api/v1/users",
+					"protocol": "https",
+					"host": [
+						"jsonmonk",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"first_name\": \"Truong\",\r\n    \"last_name\": \"Minh\",\r\n    \"email\": \"test1@example.com\",\r\n    \"mobile_no\": \"123456789\",\r\n    \"password\": \"password1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://jsonmonk.com/api/v1/users",
+					"protocol": "https",
+					"host": [
+						"jsonmonk",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

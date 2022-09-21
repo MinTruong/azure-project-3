@@ -226,7 +226,7 @@ stages:
                         --reporters cli,junit \
                         --reporter-junit-export log/newman/validationTestReport.xml \
                         --suppress-exit-code
-            displayName: Validation Test
+            displayName: Validation Test (http://dummy.restapiexample.com)
 
           - bash: |
               newman run /home/myagent/myagent/_work/1/postman/P3_Regression_Tests.postman_collection.json \
@@ -234,21 +234,61 @@ stages:
                      --reporters cli,junit \
                      --reporter-junit-export log/newman/regressionTestReport.xml \
                      --suppress-exit-code
-            displayName: Regression Test
+            displayName: Regression Test (http://dummy.restapiexample.com)
           
+          - bash: |
+              newman run /home/myagent/myagent/_work/1/postman/P3_Validation_Tests_2.postman_collection.json \
+                        -e /home/myagent/myagent/_work/1/postman/P3_Validation_Tests_Environment_2.postman_environment.json \
+                        --reporters cli,junit \
+                        --reporter-junit-export log/newman/validationTestReport_2.xml \
+                        --suppress-exit-code
+            displayName: Validation Test (https://jsonmonk.com/api/v1/users)
+
+          - bash: |
+              newman run /home/myagent/myagent/_work/1/postman/P3_Regression_Tests_2.postman_collection.json \
+                     -e /home/myagent/myagent/_work/1/postman/P3_Regression_Tests_Environment_2.postman_environment.json \
+                     --reporters cli,junit \
+                     --reporter-junit-export log/newman/regressionTestReport_2.xml \
+                     --suppress-exit-code
+            displayName: Regression Test (https://jsonmonk.com/api/v1/users)
+
           - task: PublishPipelineArtifact@1
             displayName: Publish Regression and Validation Test Reports as Artifacts
             inputs:
               targetPath: '$(System.DefaultWorkingDirectory)/log/newman'
               artifactName: 'drop-integration-test'
           - task: PublishTestResults@2
-            displayName: Publish Regression and Validation Test Reports
+            displayName: Publish Validation Test Reports (http://dummy.restapiexample.com)
             condition: always()
             inputs:
               testResultsFormat: 'JUnit'
-              testResultsFiles: '$(System.DefaultWorkingDirectory)/log/newman/*.xml'
+              testResultsFiles: '$(System.DefaultWorkingDirectory)/log/newman/validationTestReport.xml'
               mergeTestResults: true
-              testRunTitle: 'Regression and Validation Test Reports'
+              testRunTitle: 'Validation Test Reports (http://dummy.restapiexample.com)'
+          - task: PublishTestResults@2
+            displayName: Publish Regression Test Reports (http://dummy.restapiexample.com)
+            condition: always()
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: '$(System.DefaultWorkingDirectory)/log/newman/regressionTestReport.xml'
+              mergeTestResults: true
+              testRunTitle: 'Regression Test Reports (http://dummy.restapiexample.com)'
+          - task: PublishTestResults@2
+            displayName: Publish Validation Test Reports (https://jsonmonk.com/api/v1/users)
+            condition: always()
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: '$(System.DefaultWorkingDirectory)/log/newman/validationTestReport_2.xml'
+              mergeTestResults: true
+              testRunTitle: 'Validation Test Reports (https://jsonmonk.com/api/v1/users)'
+          - task: PublishTestResults@2
+            displayName: Publish Regression Test Reports (https://jsonmonk.com/api/v1/users)
+            condition: always()
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: '$(System.DefaultWorkingDirectory)/log/newman/regressionTestReport_2.xml'
+              mergeTestResults: true
+              testRunTitle: 'Regression Test Reports (https://jsonmonk.com/api/v1/users)'
 
           ####################################################################
           #                       JMeter   Test                              #
