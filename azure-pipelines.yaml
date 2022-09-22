@@ -9,26 +9,26 @@ stages:
 # ####################################################################
 # #                       Prepare environment                        #
 # ####################################################################
-# - stage: Prepare
-#   displayName: Prepare environment 
-#   jobs: 
-#   - deployment: deploy_terraform
-#     continueOnError: false
-#     environment: 'TEST'
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#             - checkout: self
+- stage: Prepare
+  displayName: Prepare environment 
+  jobs: 
+  - deployment: deploy_terraform
+    continueOnError: false
+    environment: 'TEST'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - checkout: self
 
-#             ######### Step 1: Install Terraform ##########
-#             - task: Bash@3
-#               displayName: install zip
-#               inputs:
-#                 targetType: 'inline'
-#                 script: |
-#                   # Write your commands here
-#                   sudo apt-get -y install zip
+            ######### Step 1: Install Terraform ##########
+            - task: Bash@3
+              displayName: install zip
+              inputs:
+                targetType: 'inline'
+                script: |
+                  # Write your commands here
+                  sudo apt-get -y install zip
 
 #             - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
 #               displayName: install terraform
