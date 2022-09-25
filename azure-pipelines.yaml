@@ -114,22 +114,22 @@ stages:
 #                       Build Test   zip                           #
 ####################################################################
 - stage: Build
-  jobs:
-  - job: Build
-    pool:
-      vmImage: 'ubuntu-latest'
-      name: 'myAgentPool'
-    steps:
-    - task: ArchiveFiles@2
-      displayName: 'Archive Selenium tests'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium-tests.zip'
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium-tests.zip
-      displayName: 'Upload Selenium Tests'
-      artifact: selenium
+  # jobs:
+  # - job: Build
+  #   pool:
+  #     vmImage: 'ubuntu-latest'
+  #     name: 'myAgentPool'
+  #   steps:
+  #   - task: ArchiveFiles@2
+  #     displayName: 'Archive Selenium tests'
+  #     inputs:
+  #       rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
+  #       includeRootFolder: false
+  #       archiveType: 'zip'
+  #       archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium-tests.zip'
+  #   - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium-tests.zip
+  #     displayName: 'Upload Selenium Tests'
+  #     artifact: selenium
 
     # - task: ArchiveFiles@2
     #   displayName: 'Archive Postman tests'
@@ -168,9 +168,9 @@ stages:
       runOnce:
         deploy:
           steps:
-          - download: current
-            displayName: Download selenium
-            artifact: selenium 
+          # - download: current
+          #   displayName: Download selenium
+          #   artifact: selenium 
           ####################################################################
           #                       Selenium Test                              #
           ####################################################################
@@ -181,26 +181,47 @@ stages:
               script: |
                 #! /bin/bash
                 
+                sudo apt-get update -y
+                sudo apt-get install python3-pip -y
+                sudo apt-get install -y chromium-browser
+                sudo apt-get install -y chromium-chromedriver
+                python3 -m pip install --upgrade pip
+                pip3 install selenium
+                chromium-browser -version
+                chromedriver -version
+
                 sudo apt-get upgrade -y
                 sudo apt-get install python3-pip -y
                 sudo apt-get install unzip -y
                 sudo apt-get install -y chromium-browser
                 sudo apt-get install -y chromium-chromedriver
                 # selenium==3.141.0
-                sudo pip3 install 
-                export PATH=$PATH:/usr/lib/chromium-browser/
-                cd $(Pipeline.Workspace)/selenium
-                unzip -o $(Pipeline.Workspace)/selenium/$(Build.BuildId)-selenium-tests -d .
-          - task: Bash@3
-            displayName: 'Run Selenium Tests'
-            inputs:
-              targetType: 'inline'
-              script: |
-                # python3.7 /home/myagent/myagent/_work/1/selenium/login.py > /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
-                sudo python3 /home/myagent/myagent/_work/1/selenium/login.py > seleniumtestrun.log
-                sudo cp /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log /var/log
-                echo "copy log ---------------------------"
-                sudo cat /var/log/seleniumtestrun.log
+                # sudo pip3 install 
+                # export PATH=$PATH:/usr/lib/chromium-browser/
+                # cd $(Pipeline.Workspace)/selenium
+                # unzip -o $(Pipeline.Workspace)/selenium/$(Build.BuildId)-selenium-tests -d .
+          - bash: |
+              cd $(Pipeline.Workspace)/selenium
+              sudo python3  login.py > seleniumtestrun.log
+              # python3 publishlog.py selenium-result.log $(LOG-WORKSPACE) $(LOG-KEY) > publish.log 
+              sudo cat seleniumtestrun.log
+              sudo cp seleniumtestrun.log /var/log
+            displayName: Run Selenium Test-Suite
+          # - task: PublishPipelineArtifact@1
+          #   displayName: Publish Selenium Result logs
+          #   inputs:
+          #     targetPath: '$(Pipeline.Workspace)/selenium/selenium-result.log'
+          #     artifactName: 'SeleniumTestResult'
+          # - task: Bash@3
+          #   displayName: 'Run Selenium Tests'
+          #   inputs:
+          #     targetType: 'inline'
+          #     script: |
+          #       # python3.7 /home/myagent/myagent/_work/1/selenium/login.py > /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
+          #       sudo python3 /home/myagent/myagent/_work/1/selenium/login.py > seleniumtestrun.log
+          #       sudo cp /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log /var/log
+          #       echo "copy log ---------------------------"
+          #       sudo cat /var/log/seleniumtestrun.log
           # ####################################################################
           # #                       Postman  Test                              #
           # ####################################################################
