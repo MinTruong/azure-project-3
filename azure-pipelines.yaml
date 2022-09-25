@@ -202,7 +202,9 @@ stages:
                 # unzip -o $(Pipeline.Workspace)/selenium/$(Build.BuildId)-selenium-tests -d .
           - bash: |
               cd $(Pipeline.Workspace)/selenium
-              sudo python3  login.py > seleniumtestrun.log
+              python3  login.py > seleniumtestrun.log
+              ls -lah
+              sudo cat seleniumtestrun.log
               # python3 publishlog.py selenium-result.log $(LOG-WORKSPACE) $(LOG-KEY) > publish.log 
               sudo cat seleniumtestrun.log
               sudo cp seleniumtestrun.log /var/log
