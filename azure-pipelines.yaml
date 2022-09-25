@@ -186,7 +186,8 @@ stages:
                 sudo apt-get install unzip -y
                 sudo apt-get install -y chromium-browser
                 sudo apt-get install -y chromium-chromedriver
-                sudo pip3 install selenium==3.141.0
+                # selenium==3.141.0
+                sudo pip3 install 
                 export PATH=$PATH:/usr/lib/chromium-browser/
                 cd $(Pipeline.Workspace)/selenium
                 unzip -o $(Pipeline.Workspace)/selenium/$(Build.BuildId)-selenium-tests -d .
@@ -196,10 +197,10 @@ stages:
               targetType: 'inline'
               script: |
                 # python3.7 /home/myagent/myagent/_work/1/selenium/login.py > /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
-                python3 /home/myagent/myagent/_work/1/selenium/login.py d
+                sudo python3 /home/myagent/myagent/_work/1/selenium/login.py > seleniumtestrun.log
                 sudo cp /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log /var/log
                 echo "copy log ---------------------------"
-                sudo cat /var/logseleniumtestrun.log
+                sudo cat /var/log/seleniumtestrun.log
           # ####################################################################
           # #                       Postman  Test                              #
           # ####################################################################
