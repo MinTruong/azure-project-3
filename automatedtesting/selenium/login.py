@@ -5,10 +5,10 @@ import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 import logging
 logging.basicConfig(
+    filename="seleniumtestrun.log",
     format='%(asctime)s %(levelname)-8s %(message)s',
     level=logging.INFO,
     datefmt='%Y-%m-%d %H:%M:%S')
-logging.basicConfig(filename="seleniumtestrun.log")
 
 options = ChromeOptions()
 options.add_argument("--headless") 
