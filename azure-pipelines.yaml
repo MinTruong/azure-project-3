@@ -197,10 +197,10 @@ stages:
               script: |
                 # python3.7 /home/myagent/myagent/_work/1/selenium/login.py > /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
                 sudo python3 /home/myagent/myagent/_work/1/selenium/login.py | tee -a /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
-                cat /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
+                sudo cat /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log
                 sudo cp /home/myagent/myagent/_work/1/selenium/seleniumtestrun.log /home/myagent
                 echo "copy log ---------------------------"
-                cat /home/myagent/seleniumtestrun.log
+                sudo cat /home/myagent/seleniumtestrun.log
           # ####################################################################
           # #                       Postman  Test                              #
           # ####################################################################
