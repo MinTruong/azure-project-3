@@ -10,7 +10,7 @@ terraform {
     storage_account_name = "storage208884"
     container_name       = "mycontainer"
     key                  = "key1"
-    access_key           = "z6vQVI4doyhwMh9WWkkRYEae+ioEntRLk6W6jaNGS1mMpngqOOzEvzfNB8WZIPGTnHaTrODeORyV+ASt53JbZA=="
+    access_key           = "apVKAxDvxmfP5N6aWLU+EbwnYp43SMqJBswkkTQLBxS353rw+W0CnpmiAcFkxZjBSWHnygS624+A+AStg7NGZw=="
   }
 }
 
