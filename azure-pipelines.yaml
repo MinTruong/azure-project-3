@@ -190,11 +190,6 @@ stages:
                 chromium-browser -version
                 chromedriver -version
 
-                sudo apt-get upgrade -y
-                sudo apt-get install python3-pip -y
-                sudo apt-get install unzip -y
-                sudo apt-get install -y chromium-browser
-                sudo apt-get install -y chromium-chromedriver
                 # selenium==3.141.0
                 # sudo pip3 install 
                 # export PATH=$PATH:/usr/lib/chromium-browser/
@@ -203,8 +198,7 @@ stages:
           - bash: |
               cd $(Pipeline.Workspace)/s/automatedtesting/selenium
               rm -rf seleniumtestrun.log
-              pwd
-              sudo python3 login.py > seleniumtestrun.log
+              sudo python3  login.py > seleniumtestrun.log
               ls -lah
               # python3 publishlog.py selenium-result.log $(LOG-WORKSPACE) $(LOG-KEY) > publish.log 
               sudo cat seleniumtestrun.log
