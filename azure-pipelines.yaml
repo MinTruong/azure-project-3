@@ -201,7 +201,7 @@ stages:
                 # cd $(Pipeline.Workspace)/selenium
                 # unzip -o $(Pipeline.Workspace)/selenium/$(Build.BuildId)-selenium-tests -d .
           - bash: |
-              cd $(Pipeline.Workspace)/automatedtesting/selenium
+              cd $(Pipeline.Workspace)/s/automatedtesting/selenium
               rm -rf seleniumtestrun.log
               pwd
               sudo python3 login.py > seleniumtestrun.log
