@@ -199,7 +199,7 @@ stages:
               cd $(Pipeline.Workspace)/s/automatedtesting/selenium
               rm -rf seleniumtestrun.log
               pwd
-              sudo python3 login.py
+              python3 login.py
               ls -lah
               # python3 publishlog.py selenium-result.log $(LOG-WORKSPACE) $(LOG-KEY) > publish.log 
               sudo cat seleniumtestrun.log
