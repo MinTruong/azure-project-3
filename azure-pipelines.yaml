@@ -187,8 +187,6 @@ stages:
                 sudo apt-get install -y chromium-chromedriver
                 sudo python3 -m pip install --upgrade pip
                 sudo pip3 install selenium==3.141.0
-                chromium-browser -version
-                chromedriver -version
 
                 # selenium==3.141.0
                 # sudo pip3 install 
