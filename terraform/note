@@ -1,1 +1,9 @@
 AzureDevOps@123
+
+wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w 95da5a79-a804-48ad-b63a-ed7626380092 -s kuJ7xbMspDMQqHXiOINY0svvBnPa0uEx/3GTotkTDsZyvtFLKf781eIJfrtmLcVSUaxqQ1EcIYNU6YnlIXsPMA==
+
+sudo sh ./omsagent-*.universal.x64.sh --upgrade -p https://<proxy address>:<proxy port> -w 95da5a79-a804-48ad-b63a-ed7626380092 -s kuJ7xbMspDMQqHXiOINY0svvBnPa0uEx/3GTotkTDsZyvtFLKf781eIJfrtmLcVSUaxqQ1EcIYNU6YnlIXsPMA==
+
+wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w 95da5a79-a804-48ad-b63a-ed7626380092 -s kuJ7xbMspDMQqHXiOINY0svvBnPa0uEx/3GTotkTDsZyvtFLKf781eIJfrtmLcVSUaxqQ1EcIYNU6YnlIXsPMA== -d opinsights.azure.com
+
+sudo sh ./omsagent-*.universal.x64.sh --install -w 95da5a79-a804-48ad-b63a-ed7626380092 -s kuJ7xbMspDMQqHXiOINY0svvBnPa0uEx/3GTotkTDsZyvtFLKf781eIJfrtmLcVSUaxqQ1EcIYNU6YnlIXsPMA==

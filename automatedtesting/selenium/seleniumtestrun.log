@@ -1,17 +1,17 @@
-2022-09-25 16:55:50 INFO     Browser started successfully. Navigating to the demo page to login.
-2022-09-25 16:55:50 INFO     Starting the browser...
-2022-09-25 16:55:51 INFO     Successfully logged in as standard_user
-2022-09-25 16:55:51 INFO     Adding all 6 items to cart
-2022-09-25 16:55:51 INFO     add-to-cart-sauce-labs-backpack added to the cart
-2022-09-25 16:55:51 INFO     add-to-cart-sauce-labs-bike-light added to the cart
-2022-09-25 16:55:51 INFO     add-to-cart-sauce-labs-bolt-t-shirt added to the cart
-2022-09-25 16:55:52 INFO     add-to-cart-sauce-labs-fleece-jacket added to the cart
-2022-09-25 16:55:52 INFO     add-to-cart-sauce-labs-onesie added to the cart
-2022-09-25 16:55:52 INFO     add-to-cart-test.allthethings()-t-shirt-(red) added to the cart
-2022-09-25 16:55:52 INFO     Removing all 6 items to cart
-2022-09-25 16:55:52 INFO     remove-sauce-labs-backpack removed from the cart
-2022-09-25 16:55:52 INFO     remove-sauce-labs-bike-light removed from the cart
-2022-09-25 16:55:52 INFO     remove-sauce-labs-bolt-t-shirt removed from the cart
-2022-09-25 16:55:52 INFO     remove-sauce-labs-fleece-jacket removed from the cart
-2022-09-25 16:55:52 INFO     remove-sauce-labs-onesie removed from the cart
-2022-09-25 16:55:52 INFO     remove-test.allthethings()-t-shirt-(red) removed from the cart
+2022-09-26 15:47:13 INFO     Browser started successfully. Navigating to the demo page to login.
+2022-09-26 15:47:13 INFO     Starting the browser...
+2022-09-26 15:47:14 INFO     Successfully logged in as standard_user
+2022-09-26 15:47:14 INFO     Adding all 6 items to cart
+2022-09-26 15:47:14 INFO     add-to-cart-sauce-labs-backpack added to the cart
+2022-09-26 15:47:14 INFO     add-to-cart-sauce-labs-bike-light added to the cart
+2022-09-26 15:47:14 INFO     add-to-cart-sauce-labs-bolt-t-shirt added to the cart
+2022-09-26 15:47:14 INFO     add-to-cart-sauce-labs-fleece-jacket added to the cart
+2022-09-26 15:47:14 INFO     add-to-cart-sauce-labs-onesie added to the cart
+2022-09-26 15:47:14 INFO     add-to-cart-test.allthethings()-t-shirt-(red) added to the cart
+2022-09-26 15:47:14 INFO     Removing all 6 items to cart
+2022-09-26 15:47:14 INFO     remove-sauce-labs-backpack removed from the cart
+2022-09-26 15:47:14 INFO     remove-sauce-labs-bike-light removed from the cart
+2022-09-26 15:47:14 INFO     remove-sauce-labs-bolt-t-shirt removed from the cart
+2022-09-26 15:47:14 INFO     remove-sauce-labs-fleece-jacket removed from the cart
+2022-09-26 15:47:14 INFO     remove-sauce-labs-onesie removed from the cart
+2022-09-26 15:47:14 INFO     remove-test.allthethings()-t-shirt-(red) removed from the cart
